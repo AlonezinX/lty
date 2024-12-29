@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bem-vindo, <%= user.name %>!</title>
+  <style>
+    /* Estilo para a página home */
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #4CAF50, #2196F3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      color: white;
+      position: relative; /* Para garantir que o rodapé fique posicionado em relação ao body */
+    }
+
+    .title {
+      font-size: 36px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeIn 2s ease-out forwards, glow 3s infinite alternate 2s;
+    }
+
+    .title span {
+      display: inline-block;
+    }
+
+    .title .black {
+      color: black;
+    }
+
+    .title .blue {
+      color: #007BFF; /* Azul mais forte */
+    }
+
+    .home-container {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Sombra no card */
+      width: 300px;
+      text-align: center;
+      color: #333;
+      z-index: 1; /* Para garantir que o card fique acima do rodapé */
+    }
+
+    .home-container h1 {
+      margin-bottom: 20px;
+    }
+
+    .home-container img {
+      width: 150px; /* Tamanho reduzido */
+      height: auto; /* Mantém a proporção */
+      border-radius: 8px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      transition: transform 0.3s ease; /* Animação de clique */
+    }
+
+    .home-container img:active {
+      transform: scale(0.95); /* Efeito ao clicar */
+    }
+
+    .home-container p {
+      font-size: 16px;
+      color: #555;
+    }
+
+    .logout-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background-color: #45a049;
+    }
+
+    /* Estilo para modal de imagem */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      animation: zoomIn 0.5s ease; /* Animação ao abrir */
+    }
+
+    .modal img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 8px;
+      animation: zoomIn 0.5s ease; /* Animação ao abrir */
+    }
+
+    .modal .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 24px;
+      color: white;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .modal .close-btn:hover {
+      color: #FF0000;
+    }
+
+    /* Animações */
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes glow {
+      0% {
+        text-shadow: 0 0 5px white, 0 0 10px lightblue, 0 0 15px lightblue;
+      }
+      100% {
+        text-shadow: 0 0 15px white, 0 0 30px lightblue, 0 0 45px lightblue;
+      }
+    }
+
+    @keyframes zoomIn {
+      0% {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* Marca d'água fixa no fundo com mais espaço */
+    .watermark {
+      position: absolute;
+      bottom: 1px; /* Ajuste da posição para não ficar colado */
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.7);
+      text-align: center;
+      z-index: 0; /* Fica atrás do conteúdo */
+    }
+  </style>
+</head>
+<body>
+  <!-- Título com letras coloridas e animação -->
+  <div class="title">
+    <span class="black">L</span>
+    <span class="blue">O</span>
+    <span class="black">Y</span>
+    <span class="blue">A</span>
+    <span class="black">L</span>
+    <span class="blue">T</span>
+    <span class="black">Y</span>
+  </div>
+
+  <div class="home-container">
+    <h1>Bem-vindo, <%= user.name %>!</h1>
+    <% if (user.photo) { %>
+      <img src="<%= user.photo %>" alt="<%= user.name %>" onclick="openModal('<%= user.photo %>')">
+    <% } %>
+    <p><%= user.message %></p>
+    <button class="logout-btn" onclick="window.location.href='/'">Sair</button>
+  </div>
+
+  <!-- Modal de imagem -->
+  <div id="image-modal" class="modal">
+    <button class="close-btn" onclick="closeModal()">X</button>
+    <img id="modal-image" src="" alt="Imagem ampliada">
+  </div>
+
+  <!-- Marca d'água -->
+  <div class="watermark">
+    feito por @nielzinxyz - todos os direitos reservados a LTY
+  </div>
+
+  <script>
+    // Função para abrir o modal com a imagem ampliada
+    function openModal(imageSrc) {
+      const modal = document.getElementById('image-modal');
+      const modalImage = document.getElementById('modal-image');
+      modalImage.src = imageSrc;
+      modal.style.display = 'flex';
+    }
+
+    // Função para fechar o modal
+    function closeModal() {
+      const modal = document.getElementById('image-modal');
+      modal.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+const express = require('express');
+const path = require('path');
+const app = express();
+const port = 3000;
+
+// Dados de exemplo de usuários (para autenticação simples)
+const users = [
+  { username: 'Euxi', password: 'lty2025', name: 'Agneto Wilian', message: 'Feliz Ano Novo, Mano Euxi! Que 2025 traga muita saúde, sucesso e felicidade para você. Agradeço de coração por todos os momentos incríveis, risadas e trocas que tivemos. Que esse novo ano seja repleto de realizações e alegrias. Vamos juntos em mais uma jornada!', photo: '/images/photo3.jpg' },
+  { username: 'Mira pod', password: 'lty2025', name: 'Mickael', message: 'Sempre uma alegria estar contigo, amigo!', photo: '/images/amigo2.jpg' },
+  { username: 'Light', password: 'lty2025', name: 'Raoã', message: 'Você é uma pessoa especial, agradeço por tudo!', photo: '' },
+  { username: 'Iguinho', password: 'lty2025', name: 'Igo', message: 'Você é uma pessoa especial, agradeço por tudo!', photo: '' },
+  { username: 'Sadrack', password: 'lty2025', name: 'Sauã', message: 'Você é uma pessoa especial, agradeço por tudo!', photo: '' },
+  { username: 'Livinha', password: 'lty2025', name: 'Livia', message: 'Você é uma pessoa especial, agradeço por tudo!', photo: '' },
+  { username: 'Mikael', password: 'lty2025', name: 'Mikael', message: 'Você é uma pessoa especial, agradeço por tudo!', photo: '' },
+  { username: 'Tilt', password: 'lty2025', name: 'Thiago', message: 'Você é uma pessoa especial, agradeço por tudo!', photo: '' },
+  { username: 'Ribeiro', password: 'lty2025', name: 'Ribeiro', message: 'Você é uma pessoa especial, agradeço por tudo!', photo: '' },
+  { username: 'Manu', password: 'lty2025', name: 'Manu', message: 'Você é uma pessoa especial, agradeço por tudo!', photo: '' }
+];
+
+// Middleware para interpretar os dados do formulário
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Servir arquivos estáticos (CSS, imagens, etc)
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Definir o diretório de views para EJS
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Rota para a página de login
+app.get('/', (req, res) => {
+  res.render('login');
+});
+
+// Rota para processar o login (POST)
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+
+  // Verificar se o usuário existe
+  const user = users.find(u => u.username === username && u.password === password);
+
+  if (user) {
+    // Se encontrar o usuário, redireciona para a home com os dados do usuário
+    res.redirect(`/home?username=${username}`);
+  } else {
+    // Se não encontrar, redireciona de volta para o login
+    res.send('Usuário ou senha inválidos');
+  }
+});
+
+// Rota para a home (GET)
+app.get('/home', (req, res) => {
+  const username = req.query.username;
+
+  const user = users.find(u => u.username === username);
+
+  if (user) {
+    res.render('home', { user });
+  } else {
+    res.send('Usuário não encontrado');
+  }
+});
+
+// Rota para servir as imagens dos amigos
+app.get('/images/:img', (req, res) => {
+  const imgPath = path.join(__dirname, 'public', 'images', req.params.img);
+  res.sendFile(imgPath);
+});
+
+// Iniciar o servidor
+app.listen(port, () => {
+  console.log(`Servidor rodando em http://localhost:${port}`);
+});
