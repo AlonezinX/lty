@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Retrospectiva LTY</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #000; /* Fundo preto */
+      color: #fff; /* Texto branco */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #fff; /* Título branco */
+      font-size: 30px;
+      text-align: center;
+      margin-bottom: 20px;
+      animation: fadeIn 2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(-20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .video-container {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .video-container div {
+      margin-bottom: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #f0db4f; /* Cor amarela */
+    }
+
+    video {
+      display: block;
+      width: 100%;
+      max-width: 800px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .comment-section {
+      width: 100%;
+      max-width: 400px; /* Reduzi a largura */
+      background: #222; /* Fundo escuro para o card */
+      padding: 15px; /* Diminuí o padding */
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      animation: slideIn 1s ease-out;
+    }
+
+    @keyframes slideIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .comment-section h2 {
+      font-size: 20px; /* Reduzi o tamanho da fonte */
+      margin-bottom: 10px;
+      color: #fff; /* Título do comentário branco */
+    }
+
+    .comments {
+      margin-bottom: 15px; /* Reduzi o espaço inferior */
+      max-height: 200px; /* Reduzi a altura máxima */
+      overflow-y: auto;
+    }
+
+    .comment {
+      margin-bottom: 10px; /* Reduzi o espaço entre comentários */
+      padding: 10px;
+      background: #333; /* Fundo do comentário */
+      border-radius: 8px;
+      border: 1px solid #444;
+      opacity: 0;
+      animation: fadeInComment 0.5s forwards;
+    }
+
+    @keyframes fadeInComment {
+      0% { opacity: 0; transform: translateX(-20px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+
+    .comment .author {
+      font-weight: bold;
+      color: #007BFF; /* Cor azul para o nome do autor */
+      margin-bottom: 5px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    input, textarea {
+      width: 100%;
+      max-width: 310px; /* Reduzi a largura máxima */
+      padding: 8px; /* Reduzi o padding */
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    input[readonly] {
+      background: #333; /* Fundo escuro no campo de nome */
+      color: #007BFF; /* Cor azul no nome */
+    }
+
+form button {
+  padding: 6px 12px; /* Diminuído o preenchimento */
+  font-size: 12px; /* Diminuído o tamanho da fonte */
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+form button:hover {
+  background: #45a049;
+}
+  </style>
+</head>
+<body>
+  <h1>RETROSPECTIVA LTY</h1>
+  
+  <!-- Primeiro vídeo -->
+  <div class="video-container">
+    <div>Primeiro vídeo criado por Agneto Wilian</div>
+    <video controls>
+      <source src="https://files.catbox.moe/mbnuf7.mp4" type="video/mp4">
+      Seu navegador não suporta o elemento de vídeo.
+    </video>
+  </div>
+
+  <!-- Segundo vídeo -->
+  <div class="video-container">
+    <div>Segundo vídeo criado por Daniel</div>
+    <video controls>
+      <source src="https://files.catbox.moe/yvrlka.mp4" type="video/mp4">
+      Seu navegador não suporta o elemento de vídeo.
+    </video>
+  </div>
+
+  <div class="comment-section">
+    <h2>Comentários</h2>
+    <div class="comments">
+      <% comments.forEach(comment => { %>
+       <div class="comment">
+          <div class="author"><%= comment.author %></div>
+          <div class="message"><%= comment.message %></div>
+          <% if (comment.author === user.name) { %>
+            <form action="/geral/comment/<%= comment.id %>/delete" method="POST" style="display:inline;">
+              <input type="hidden" name="username" value="<%= user.name %>">
+              <button type="submit" class="delete-button">Apagar</button>
+            </form>
+          <% } %>
+       </div>
+      <% }); %>
+    </div>
+
+    <form action="/geral/comment" method="POST">
+      <input type="text" name="author" value="<%= user.name %>" readonly> <!-- Bloqueado para edição -->
+      <textarea name="message" placeholder="Escreva seu comentário..." required></textarea>
+      <button type="submit">Adicionar Comentário</button>
+    </form>
+  </div>
+</body>
+</html>
